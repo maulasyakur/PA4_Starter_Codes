@@ -13,6 +13,9 @@ void Map::initializeMap(std::vector<Isle *> isles)
 {
     // TODO: Insert innitial isles to the tree
     // Then populate with Goldium and Einstainium items
+    // for (Isle * isle : isles){
+    //     insert(isle);
+    // }
 }
 
 MapNode *Map::rotateRight(MapNode *current)
@@ -20,6 +23,20 @@ MapNode *Map::rotateRight(MapNode *current)
     // TODO: Perform right rotation according to AVL
     // return necessary new root
     // Use std::cerr << "[Right Rotation] " << "Called on invalid node!" << std::endl;
+
+    MapNode *x = current->left;
+    MapNode *T2 = x->right;
+
+    // Perform rotation
+    x->right = current;
+    current->left = T2;
+
+    // Update heights
+    current->height = std::max(height(current->left), height(current->right)) + 1;
+    x->height = std::max(height(x->left), height(x->right)) + 1;
+
+    // Return new root
+    return x;
 }
 
 MapNode *Map::rotateLeft(MapNode *current)
@@ -27,6 +44,19 @@ MapNode *Map::rotateLeft(MapNode *current)
     // TODO: Perform left rotation according to AVL
     // return necessary new root
     // Use std::cerr << "[Left Rotation] " << "Called on invalid node!" << std::endl;
+    MapNode *y = current->right;
+    MapNode *T2 = y->left;
+
+    // Perform rotation
+    y->left = current;
+    current->right = T2;
+
+    //  Update heights
+    current->height = std::max(height(current->left), height(current->right)) + 1;
+    y->height = std::max(height(y->left), height(y->right)) + 1;
+
+    // Return new root
+    return y;
 }
 
 int calculateMinMapDepthAccess(int playerDepth, int totalShaperTreeHeight, int totalMapDepth)
@@ -42,12 +72,55 @@ int Map::height(MapNode *node)
 
 MapNode *Map::insert(MapNode *node, Isle *isle)
 {
-    MapNode *newNode = nullptr;
+    // // TODO: Recursively insert isle to the tree
+    // // returns inserted node
+    // /* 1.  Perform the normal BST insertion */
+    // if (node == NULL)
+    //     return new MapNode(isle);
 
-    // TODO: Recursively insert isle to the tree
-    // returns inserted node
+    // if (isle < node->isle)
+    //     node->left = insert(node->left, isle);
+    // else if (isle > node->isle)
+    //     node->right = insert(node->right, isle);
+    // else // Equal keys are not allowed in BST
+    //     return node;
 
-    return newNode;
+    // /* 2. Update height of this ancestor node */
+    // node->height = 1 + std::max(height(node->left),
+    //                     height(node->right));
+
+    // /* 3. Get the balance factor of this ancestor
+    //       node to check whether this node became
+    //       unbalanced */
+    // int balance = height(node->left) - height(node->right);
+
+    // // If this node becomes unbalanced, then
+    // // there are 4 cases
+
+    // // Left Left Case
+    // if (balance > 1 && isle < node->left->isle)
+    //     return rotateRight(node);
+
+    // // Right Right Case
+    // if (balance < -1 && isle > node->right->isle)
+    //     return rotateLeft(node);
+
+    // // Left Right Case
+    // if (balance > 1 && isle > node->left->isle)
+    // {
+    //     node->left =  rotateRight(node->left);
+    //     return rotateLeft(node);
+    // }
+
+    // // Right Left Case
+    // if (balance < -1 && isle < node->right->isle)
+    // {
+    //     node->right = rotateRight(node->right);
+    //     return rotateLeft(node);
+    // }
+
+    // /* return the (unchanged) node pointer */
+    // return node;
 }
 
 void Map::insert(Isle *isle)
