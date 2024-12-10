@@ -27,74 +27,42 @@ bool Isle::increaseShaperCount()
 {
     // TODO: Increase shaperCount if necessary
     // return isFull, True if capacity is exceded, false otherwise
-    if (shaperCount >= capacity){
-        return false;
+    if (shaperCount < capacity){
+        shaperCount++;
+        return true;
     }
 
-    shaperCount++;
-
-    return true;
+    return false;
 }
 
 bool Isle::decreaseShaperCount()
 {
     // TODO: Decrease shaperCount if necessary
     // return isEmpty, True if shaper count less and equal to 0, false otherwise
-    if (shaperCount <= 0){
-        return false;
+    if (shaperCount > 0){
+        shaperCount--;
+        return true;
     }
 
-    shaperCount--;
-
-    return true;
+    return false;
 }
 
 bool Isle::operator==(const Isle &other) const
 {
     // TODO: Compare by name, return true if same
-    return other.getName().compare(name) == 0;
+    return other.getName() == name;
 }
 
 bool Isle::operator<(const Isle &other) const
 {
     // TODO: Compare by name
-    std::string other_name = other.getName();
-    if (other_name == name){
-        return false;
-    }
-
-    int other_name_length = other_name.length();
-    int name_length = name.length();
-    for (int i = 0; i < (other_name_length < name_length ? other_name_length : name_length); i++){
-        if (other_name[i] < name[i]){
-            return true;
-        } else if (other_name[i] > name[i]){
-            return false;
-        }
-    }
-
-    return other_name_length < name_length;
+    return other.getName() < name;
 }
 
 bool Isle::operator>(const Isle &other) const
 {
     // TODO: Compare by name
-    std::string other_name = other.getName();
-    if (other_name == name){
-        return false;
-    }
-
-    int other_name_length = other_name.length();
-    int name_length = name.length();
-    for (int i = 0; i < (other_name_length < name_length ? other_name_length : name_length); i++){
-        if (other_name[i] > name[i]){
-            return true;
-        } else if (other_name[i] < name[i]){
-            return false;
-        }
-    }
-
-    return other_name_length > name_length;
+    return other.getName() > name;
 }
 
 // Implementation of readFromFile

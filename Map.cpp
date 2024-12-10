@@ -13,9 +13,9 @@ void Map::initializeMap(std::vector<Isle *> isles)
 {
     // TODO: Insert innitial isles to the tree
     // Then populate with Goldium and Einstainium items
-    // for (Isle * isle : isles){
-    //     insert(isle);
-    // }
+    for (Isle * isle : isles){
+        root = insert(root, isle);
+    }
 }
 
 MapNode *Map::rotateRight(MapNode *current)
@@ -67,60 +67,63 @@ int calculateMinMapDepthAccess(int playerDepth, int totalShaperTreeHeight, int t
 int Map::height(MapNode *node)
 {
     // TODO: Return height of the node
+    if (node == nullptr){
+        return 0;
+    }
+
     return node->height;
 }
 
 MapNode *Map::insert(MapNode *node, Isle *isle)
 {
-    // // TODO: Recursively insert isle to the tree
-    // // returns inserted node
-    // /* 1.  Perform the normal BST insertion */
-    // if (node == NULL)
-    //     return new MapNode(isle);
+    // TODO: Recursively insert isle to the tree
+    // returns inserted node
+    /* 1.  Perform the normal BST insertion */
+    if (node == nullptr)
+        return new MapNode(isle);
 
-    // if (isle < node->isle)
-    //     node->left = insert(node->left, isle);
-    // else if (isle > node->isle)
-    //     node->right = insert(node->right, isle);
-    // else // Equal keys are not allowed in BST
-    //     return node;
+    if (isle < node->isle)
+        node->left = insert(node->left, isle);
+    else if (isle > node->isle)
+        node->right = insert(node->right, isle);
+    else // Equal keys are not allowed in BST
+        return node;
 
-    // /* 2. Update height of this ancestor node */
-    // node->height = 1 + std::max(height(node->left),
-    //                     height(node->right));
+    /* 2. Update height of this ancestor node */
+    node->height = 1 + std::max(height(node->left), height(node->right));
 
-    // /* 3. Get the balance factor of this ancestor
-    //       node to check whether this node became
-    //       unbalanced */
-    // int balance = height(node->left) - height(node->right);
+    /* 3. Get the balance factor of this ancestor
+          node to check whether this node became
+          unbalanced */
+    int balance = height(node->left) - height(node->right);
 
-    // // If this node becomes unbalanced, then
-    // // there are 4 cases
+    // If this node becomes unbalanced, then
+    // there are 4 cases
 
-    // // Left Left Case
-    // if (balance > 1 && isle < node->left->isle)
-    //     return rotateRight(node);
+    // Left Left Case
+    if (balance > 1 && isle < node->left->isle)
+        return rotateRight(node);
 
-    // // Right Right Case
-    // if (balance < -1 && isle > node->right->isle)
-    //     return rotateLeft(node);
+    // Right Right Case
+    if (balance < -1 && isle > node->right->isle)
+        return rotateLeft(node);
 
-    // // Left Right Case
-    // if (balance > 1 && isle > node->left->isle)
-    // {
-    //     node->left =  rotateRight(node->left);
-    //     return rotateLeft(node);
-    // }
+    // Left Right Case
+    if (balance > 1 && isle > node->left->isle)
+    {
+        node->left =  rotateRight(node->left);
+        return rotateLeft(node);
+    }
 
-    // // Right Left Case
-    // if (balance < -1 && isle < node->right->isle)
-    // {
-    //     node->right = rotateRight(node->right);
-    //     return rotateLeft(node);
-    // }
+    // Right Left Case
+    if (balance < -1 && isle < node->right->isle)
+    {
+        node->right = rotateRight(node->right);
+        return rotateLeft(node);
+    }
 
-    // /* return the (unchanged) node pointer */
-    // return node;
+    /* return the (unchanged) node pointer */
+    return node;
 }
 
 void Map::insert(Isle *isle)
