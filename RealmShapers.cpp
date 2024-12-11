@@ -33,19 +33,28 @@ std::vector<RealmShaper *> ShaperTree::getTree()
 
 bool ShaperTree::isValidIndex(int index)
 {
-    bool isValid = false;
-
     // TODO: Check if the index is valin in the tree
-    if (realmShapers[index] != nullptr){
-        isValid = true;
+    if (index < realmShapers.size() && realmShapers[index] != nullptr){
+        return true;
     }
 
-    return isValid;
+    return false;
 }
 
 void ShaperTree::insert(RealmShaper *shaper)
 {
     // TODO: Insert shaper to the tree
+    // int index = 0;
+    // while (index < realmShapers.size()){
+    //     if (shaper < realmShapers[index]){
+    //         index = index * 2 + 1;
+    //     } else if (shaper > realmShapers[index]){
+    //         index = index * 2 + 2;
+    //     } else {
+    //         return; // two same players cannot exist
+    //     }
+    // }
+    realmShapers.push_back(shaper);
 }
 
 int ShaperTree::remove(RealmShaper *shaper)
@@ -53,8 +62,24 @@ int ShaperTree::remove(RealmShaper *shaper)
     // TODO: Remove the player from tree if it exists
     // Make sure tree protects its form (complate binary tree) after deletion of a node
     // return index if found and removed
-    // else
-    return -1;
+    // else return -1
+
+    // find the index
+    int index = findIndex(shaper);
+    if (index == -1){
+        return -1;
+    }
+
+    // free from memory
+    delete realmShapers[index];
+    realmShapers.erase(realmShapers.begin() + index);
+
+    // // shift the elements left
+    // for (int i = index; i < realmShapers.size() - 1; i++){
+    //     realmShapers[i] = realmShapers[i + 1];
+    // }
+
+    return index;
 }
 
 int ShaperTree::findIndex(RealmShaper *shaper)
@@ -72,20 +97,20 @@ int ShaperTree::findIndex(RealmShaper *shaper)
 
 int ShaperTree::getDepth(RealmShaper *shaper)
 {
-    // shaper isn't in the tree
+    // find the index
     int index = findIndex(shaper);
     if (index == -1){
         return -1;
     }
 
     // shaper is in the tree
-    return log(index + 1) / log(2);
+    return (int) log(index + 1) / log(2);
 }
 
 int ShaperTree::getDepth()
 {
     // return total|max depth|height of the tree
-    return log(realmShapers.size()) / log(2);
+    return (int) log(realmShapers.size()) / log(2);
 }
 
 RealmShaper ShaperTree::duel(RealmShaper *challenger, bool result)
@@ -100,39 +125,54 @@ RealmShaper ShaperTree::duel(RealmShaper *challenger, bool result)
 
 RealmShaper *ShaperTree::getParent(RealmShaper *shaper)
 {
-    RealmShaper *parent = nullptr;
-
     // TODO: return parent of the shaper
+    int index = findIndex(shaper);
+    if (index % 2 == 0){ // if node is on the right
+        index = (index - 2) / 2;
+        return realmShapers[index];
+    } else { // if node is on the 
+        index = (index - 1) / 2;
+        return realmShapers[index];
+    }
 
-    return parent;
+    return nullptr;
 }
 
 void ShaperTree::replace(RealmShaper *player_low, RealmShaper *player_high)
 {
     // TODO: Change player_low and player_high's positions on the tree
+    RealmShaper *temp = player_high;
+    player_high = player_low;
+    player_low = temp;
 }
 
 RealmShaper *ShaperTree::findPlayer(RealmShaper shaper)
 {
-    RealmShaper *foundShaper = nullptr;
-
     // TODO: Search shaper by object
     // Return the shaper if found
     // Return nullptr if shaper not found
+    for(int i = 0; i < realmShapers.size(); i++){
+        if (*realmShapers[i] == shaper){
+            return realmShapers[i];
+        }
+    }
 
-    return foundShaper;
+    return nullptr;
 }
 
 // Find shaper by name
 RealmShaper *ShaperTree::findPlayer(std::string name)
 {
-    RealmShaper *foundShaper = nullptr;
-
     // TODO: Search shaper by name
     // Return the shaper if found
     // Return nullptr if shaper not found
+    for(int i = 0; i < realmShapers.size(); i++){
+        if (realmShapers[i]->getName() == name){
+            return realmShapers[i];
+        }
+    }
 
-    return foundShaper;
+    return nullptr;
 }
 
 std::vector<std::string> ShaperTree::inOrderTraversal(int index)

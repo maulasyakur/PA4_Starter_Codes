@@ -19,7 +19,7 @@ struct MapNode
     ~MapNode()
     {
         // TODO: Free any dynamically allocated memory if necessary
-        delete left, right, isle;
+        delete isle;
     }
 };
 

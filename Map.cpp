@@ -7,6 +7,19 @@ Map::Map()
 Map::~Map()
 {
     // TODO: Free any dynamically allocated memory if necessary
+    std::queue<MapNode *> queue;
+    queue.push(root);
+    while(!queue.empty()){
+        MapNode *curr = queue.front();
+        if (curr->right != nullptr){
+            queue.push(curr->right);
+        }
+        if (curr->left != nullptr){
+            queue.push(curr->left);
+        }
+        queue.pop();
+        delete curr;
+    }
 }
 
 void Map::initializeMap(std::vector<Isle *> isles)
@@ -23,6 +36,9 @@ MapNode *Map::rotateRight(MapNode *current)
     // TODO: Perform right rotation according to AVL
     // return necessary new root
     // Use std::cerr << "[Right Rotation] " << "Called on invalid node!" << std::endl;
+    if (current->left == nullptr){
+        std::cerr << "[Right Rotation] " << "Called on invalid node!" << std::endl;    
+    }
 
     MapNode *x = current->left;
     MapNode *T2 = x->right;
@@ -44,6 +60,10 @@ MapNode *Map::rotateLeft(MapNode *current)
     // TODO: Perform left rotation according to AVL
     // return necessary new root
     // Use std::cerr << "[Left Rotation] " << "Called on invalid node!" << std::endl;
+    if (current->right == nullptr){
+        std::cerr << "[Left Rotation] " << "Called on invalid node!" << std::endl;
+    }
+
     MapNode *y = current->right;
     MapNode *T2 = y->left;
 
@@ -78,6 +98,7 @@ MapNode *Map::insert(MapNode *node, Isle *isle)
 {
     // TODO: Recursively insert isle to the tree
     // returns inserted node
+
     /* 1.  Perform the normal BST insertion */
     if (node == nullptr)
         return new MapNode(isle);
@@ -92,9 +113,7 @@ MapNode *Map::insert(MapNode *node, Isle *isle)
     /* 2. Update height of this ancestor node */
     node->height = 1 + std::max(height(node->left), height(node->right));
 
-    /* 3. Get the balance factor of this ancestor
-          node to check whether this node became
-          unbalanced */
+    /* 3. Get the balance factor of this ancestor node to check whether this node became unbalanced */
     int balance = height(node->left) - height(node->right);
 
     // If this node becomes unbalanced, then
@@ -111,8 +130,8 @@ MapNode *Map::insert(MapNode *node, Isle *isle)
     // Left Right Case
     if (balance > 1 && isle > node->left->isle)
     {
-        node->left =  rotateRight(node->left);
-        return rotateLeft(node);
+        node->left =  rotateLeft(node->left);
+        return rotateRight(node);
     }
 
     // Right Left Case
@@ -139,8 +158,63 @@ MapNode *Map::remove(MapNode *node, Isle *isle)
     // Will be called if there is overcrowding
     // returns node
     // Use std::cout << "[Remove] " << "Tree is Empty" << std::endl;
+    
+    // // Check for an empty tree
+    // if (node == nullptr) {
+    //     std::cout << "[Remove] Tree is Empty" << std::endl;
+    //     return nullptr;
+    // }
 
-    return node;
+    // // Perform standard BST delete
+    // if (*isle < *(node->isle)) {
+    //     node->left = remove(node->left, isle);
+    // } else if (*isle > *(node->isle)) {
+    //     node->right = remove(node->right, isle);
+    // } else {
+    //     // Node with only one child or no child
+    //     if ((node->left == nullptr) || (node->right == nullptr)) {
+    //         MapNode* temp = node->left ? node->left : node->right;
+    //         delete node; // Delete the current node
+    //         return temp; // Return the single child or nullptr
+    //     } else {
+    //         // Node with two children: Find the in-order successor
+    //         MapNode* temp = node->right;
+    //         while (temp->left != nullptr)
+    //             temp = temp->left;
+
+    //         // Replace node's isle with successor's isle
+    //         delete node->isle; // Free the old isle
+    //         node->isle = temp->isle;
+
+    //         // Delete the in-order successor
+    //         node->right = remove(node->right, temp->isle);
+    //     }
+    // }
+
+    // // Update height of the current node
+    // node->height = 1 + std::max(height(node->left), height(node->right));
+
+    // // Get the balance factor of this node
+    // int balance = height(node->left) - height(node->right);
+
+    // // Balance the node
+    // if (balance > 1 && node->left && height(node->left->left) - height(node->left->right) >= 0)
+    //     return rotateRight(node);
+
+    // if (balance > 1 && node->left && height(node->left->left) - height(node->left->right) < 0) {
+    //     node->left = rotateLeft(node->left);
+    //     return rotateRight(node);
+    // }
+
+    // if (balance < -1 && node->right && height(node->right->left) - height(node->right->right) <= 0)
+    //     return rotateLeft(node);
+
+    // if (balance < -1 && node->right && height(node->right->left) - height(node->right->right) > 0) {
+    //     node->right = rotateRight(node->right);
+    //     return rotateLeft(node);
+    // }
+
+    // return node;
 }
 
 void Map::remove(Isle *isle)
